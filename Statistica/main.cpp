@@ -91,7 +91,7 @@ vector<vector<double>> readColumns(string fileName) { //assumo nel file ci siano
     return columns;
 }
 
-vector<vector<double>> readRows(int lines, string fileName) {
+vector<vector<double>> readRows(int lines, string fileName) { //al momento se c'è una virgola tra i numeri salta tutto
     ifstream file;
     vector<vector<double>> rows(lines);
     int num = 0;
@@ -137,13 +137,26 @@ double compatibility(double msr1, double inc1, double msr2, double inc2) {
     return abs(msr1-msr2)/sqrt(pow(inc1, 2)+pow(inc2, 2));
 }
 
-void writeDataOnFile(string name, vector<double> col1, vector<double> col2) {
-    long size1 = col1.size(), size2 = col2.size();
-    if (size1 != size2) {
+void writeDataOnFile(string name, vector<double> col0, vector<double> col1, bool inColumn) {
+    long size0 = col0.size(), size1 = col1.size();
+    if (size0 != size1) {
         cout << "I vettori hanno dimensioni diverse" << endl;
         abort();
     }
-    //ofstream text(name);
+    ofstream text(name);
+    if (inColumn) {
+        for (int i = 0; i < size0; ++i) {
+            text << col0[i] << "   " << col1[i] << endl;
+        }
+    } else {
+        for (int i = 0; i < size0; ++i) {
+            text << col0[i] << " ";
+        }
+        text << endl;
+        for (int j = 0; j < size1; ++j) {
+            text << col1[j] << " ";
+        }
+    }
 }
 
 //coefficienti interpolazione
@@ -198,12 +211,6 @@ struct Interpolation {
 
 
 int main() {
-    cout.precision(10);
-    vector<vector<double>> rows = readRows(3, "righe.txt");
-    vector<double> row0 = rows[0];
-    for (double r: row0) {
-        cout << r << endl;
-    }
     
     return 0;
 }
