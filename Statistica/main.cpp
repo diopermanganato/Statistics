@@ -137,24 +137,29 @@ double compatibility(double msr1, double inc1, double msr2, double inc2) {
     return abs(msr1-msr2)/sqrt(pow(inc1, 2)+pow(inc2, 2));
 }
 
-void writeDataOnFile(string name, vector<double> col0, vector<double> col1, bool inColumn) {
-    long size0 = col0.size(), size1 = col1.size();
-    if (size0 != size1) {
-        cout << "I vettori hanno dimensioni diverse" << endl;
-        abort();
+void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed) {
+    long rows = matrix.size();
+    //controllo se ogni riga ha stesso numero di colonne
+    for (int i = 0; i < rows-1; ++i) {
+        if (matrix[i].size() != matrix[i+1].size()) {
+            cout << "Il vettore " << i << "-esimo ha dimensione diversa" << endl;
+        }
     }
+    long columns = matrix[0].size();
     ofstream text(name);
-    if (inColumn) {
-        for (int i = 0; i < size0; ++i) {
-            text << col0[i] << "   " << col1[i] << endl;
+    if (transposed) {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                text << matrix[i][j] << " ";
+            }
+            text << endl;
         }
     } else {
-        for (int i = 0; i < size0; ++i) {
-            text << col0[i] << " ";
-        }
-        text << endl;
-        for (int j = 0; j < size1; ++j) {
-            text << col1[j] << " ";
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                text << matrix[j][i] << " "; //trasposta della matrice di partenza
+            }
+            text << endl;
         }
     }
 }
@@ -211,6 +216,6 @@ struct Interpolation {
 
 
 int main() {
-    
+    writeDataOnFile("generale", {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, true);
     return 0;
 }
