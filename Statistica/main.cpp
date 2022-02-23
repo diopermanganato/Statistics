@@ -14,7 +14,7 @@
 /*
  Idee:
  -propagazione incertezze
- .
+ -chi quadro
  .
  */
 
@@ -70,11 +70,11 @@ vector<double> stringToVector(string line) {
     return ret;
 }
 
-vector<vector<double>> transpose(vector<vector<double>> matrix) { //broken
-    vector<vector<double>> temp(matrix.size());
+vector<vector<double>> transpose(vector<vector<double>> matrix) {
+    vector<vector<double>> temp(matrix[0].size()); //all columns must have the same size
     for (int i = 0; i < matrix.size(); ++i) {
-        for (int j = 0; j < matrix[i].size(); ++j) {
-            temp[i].push_back(matrix[j][i]);
+        for (int j = 0; j < matrix[0].size(); ++j) {
+            temp[j].push_back(matrix[i][j]); //in new j-th row of the new matrix we put all the elements of old matrix's i-th row
         }
     }
     return temp;
@@ -91,7 +91,7 @@ vector<double> loadDataManually() {
     return output;
 }
 
-vector<vector<double>> readMatrix(string fileName, bool transposed) { //al momento se c'è una virgola tra i numeri salta tutto
+vector<vector<double>> readMatrix(string fileName, bool transposed) { 
     ifstream file(fileName);
     vector<vector<double>> matrix;
     if (file.fail()) {
@@ -178,19 +178,14 @@ struct Interpolation {
         switch (discr) {
             case 1:
                 for (int i = 0; i<size; ++i) { sum += pow(SY[i], -2); }
-                break;
             case 2:
                 for (int i = 0; i<size; ++i) { sum += pow(X[i]/SY[i], 2); }
-                break;
             case 3:
                 for (int i = 0; i<size; ++i) { sum += X[i]/pow(SY[i], 2); }
-                break;
             case 4:
                 for (int i = 0; i<size; ++i) { sum += Y[i]/pow(SY[i], 2); }
-                break;
             case 5:
                 for (int i = 0; i<size; ++i) { sum += X[i]*Y[i]/pow(SY[i], 2); }
-                break;
             default:
                 break;
         }
@@ -216,7 +211,7 @@ struct Interpolation {
 
 
 int main() {
-    vector<vector<double>> matrix = readMatrix("colonne.txt", true);
-    cout << matrix[0].size() << endl;
+    vector<vector<double>> matrix = transpose({{0, 1, 2, 3, 4}, {5, 6, 7, 8, 9}});
+    cout << matrix[3][0] << endl;
     return 0;
 }
