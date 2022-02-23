@@ -30,6 +30,15 @@ bool isNumber(string str) {
     return true;
 }
 
+int countLines(string fileName) {
+    ifstream file(fileName);
+    int num = 0;
+    for (string line = ""; getline(file, line);) {
+        num += 1;
+    }
+    return num;
+}
+
 double convert(string str) {
     if (isNumber(str)) {
         return stod(str);
@@ -61,6 +70,16 @@ vector<double> stringToVector(string line) {
     return ret;
 }
 
+vector<vector<double>> transpose(vector<vector<double>> matrix) { //broken
+    vector<vector<double>> temp(matrix.size());
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix[i].size(); ++j) {
+            temp[i].push_back(matrix[j][i]);
+        }
+    }
+    return temp;
+}
+
 vector<double> loadDataManually() {
     vector<double> output;
     string x;
@@ -72,38 +91,20 @@ vector<double> loadDataManually() {
     return output;
 }
 
-vector<vector<double>> readColumns(string fileName) { //assumo nel file ci siano solo 2 colonne
-    ifstream file;
-    vector<vector<double>> columns(2);
-    file.open(fileName);
-    if (file.fail()) {
-        cout << "Errore nell'apertura di " << fileName << endl;
-        abort();
-    }
-    while (!file.eof()) {
-        double valCol0 = 0;
-        double valCol1 = 0;
-        file >> valCol0 >> valCol1;
-        columns[0].push_back(valCol0);
-        columns[1].push_back(valCol1);
-    }
-    return columns;
-}
-
-vector<vector<double>> readRows(int lines, string fileName) { //al momento se c'è una virgola tra i numeri salta tutto
-    ifstream file;
-    vector<vector<double>> rows(lines);
-    int num = 0;
-    file.open(fileName);
+vector<vector<double>> readMatrix(string fileName, bool transposed) { //al momento se c'è una virgola tra i numeri salta tutto
+    ifstream file(fileName);
+    vector<vector<double>> matrix;
     if (file.fail()) {
         cout << "Errore nell'apertura di " << fileName << endl;
         abort();
     }
     for (string line; getline(file, line);) {
-        rows[num] = stringToVector(line);
-        num += 1;
+        matrix.push_back(stringToVector(line));
     }
-    return rows;
+    if (transposed) { //broken
+        matrix = transpose(matrix);
+    }
+    return matrix;
 }
 
 double mean(vector<double> data) {
@@ -215,6 +216,7 @@ struct Interpolation {
 
 
 int main() {
-    writeDataOnFile("generale", {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, true);
+    vector<vector<double>> matrix = readMatrix("colonne.txt", true);
+    cout << matrix[0].size() << endl;
     return 0;
 }
