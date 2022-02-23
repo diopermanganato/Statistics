@@ -13,7 +13,6 @@
 #include <cmath>
 /*
  Idee:
- -scrivere su file (in formato GNUPLOT)
  -propagazione incertezze
  .
  .
@@ -142,12 +141,12 @@ void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed
     //controllo se ogni riga ha stesso numero di colonne
     for (int i = 0; i < rows-1; ++i) {
         if (matrix[i].size() != matrix[i+1].size()) {
-            cout << "Il vettore " << i << "-esimo ha dimensione diversa" << endl;
+            cout << "Il vettore " << i+1 << "-esimo ha dimensione diversa" << endl;
         }
     }
     long columns = matrix[0].size();
     ofstream text(name);
-    if (transposed) {
+    if (!transposed) {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
                 text << matrix[i][j] << " ";
