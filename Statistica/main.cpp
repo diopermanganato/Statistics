@@ -70,6 +70,20 @@ vector<double> stringToVector(string line) {
     return ret;
 }
 
+vector<double> removeAllDuplicates(vector<double> vec) {
+    long size = vec.size();
+    vector<double> ret;
+    sort(vec.begin(), vec.end());
+    for (int i = 0; i < size; ++i) {
+        if ((i == size) && (vec[i] != vec[i-1])) {
+            ret.push_back(vec[i]);
+        } else if (vec[i] != vec[i+1]) {
+            ret.push_back(vec[i]);
+        }
+    }
+    return ret;
+}
+
 vector<vector<double>> transpose(vector<vector<double>> matrix) {
     vector<vector<double>> temp(matrix[0].size()); //all columns must have the same size
     for (int i = 0; i < matrix.size(); ++i) {
@@ -116,6 +130,25 @@ double mean(vector<double> data) {
     return sum/size;
 }
 
+double mode(vector<double> data) {
+    long counter = 0, champion = 0;
+    double saved = 0;
+    for (double c: data) {
+        counter = count(data.begin(), data.end(), c);
+        if (counter >= champion) {
+            saved = c;
+            champion = counter;
+        }
+        remove(data.begin(), data.end(), c);
+    }
+    return saved;
+}
+
+double median(vector<double>) {
+    return 0;
+}
+
+
 double stanDev(vector<double> data) {
     double m = mean(data);
     long size = data.size();
@@ -135,6 +168,14 @@ double meanStanDev(vector<double> data) {
 
 double compatibility(double msr1, double inc1, double msr2, double inc2) {
     return abs(msr1-msr2)/sqrt(pow(inc1, 2)+pow(inc2, 2));
+}
+
+double chiSquared(int k, vector<double> msr, vector<double> refValues, vector<double> var) {
+    double sum = 0;
+    for (int i = 0; i < k; ++i) {
+        sum += pow((msr[i]-refValues[i])/var[i], 2);
+    }
+    return sum;
 }
 
 void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed) {
@@ -211,7 +252,7 @@ struct Interpolation {
 
 
 int main() {
-    vector<vector<double>> matrix = transpose({{0, 1, 2, 3, 4}, {5, 6, 7, 8, 9}});
-    cout << matrix[3][0] << endl;
+    vector<double> list = loadDataManually();
+    cout << mode(list) << endl;
     return 0;
 }
