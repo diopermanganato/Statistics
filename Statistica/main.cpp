@@ -130,7 +130,8 @@ double mean(vector<double> data) {
     return sum/size;
 }
 
-double mode(vector<double> data) {
+double mode(vector<double> data) { //could be improved
+    sort(data.begin(), data.end());
     long counter = 0, champion = 0;
     double saved = 0;
     for (double c: data) {
@@ -139,13 +140,14 @@ double mode(vector<double> data) {
             saved = c;
             champion = counter;
         }
-        remove(data.begin(), data.end(), c);
     }
     return saved;
 }
 
-double median(vector<double>) {
-    return 0;
+double median(vector<double> data) {
+    long size = data.size();
+    sort(data.begin(), data.end());
+    return data[size/2];
 }
 
 
@@ -253,6 +255,6 @@ struct Interpolation {
 
 int main() {
     vector<double> list = loadDataManually();
-    cout << mode(list) << endl;
+    cout << meanStanDev(list) << endl;
     return 0;
 }
