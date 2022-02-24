@@ -181,16 +181,15 @@ double chiSquared(int k, vector<double> msr, vector<double> refValues, vector<do
 }
 
 void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed) {
-    long rows = matrix.size();
-    //controllo se ogni riga ha stesso numero di colonne
-    for (int i = 0; i < rows-1; ++i) {
+    for (int i = 0; i < matrix.size()-1; ++i) {
         if (matrix[i].size() != matrix[i+1].size()) {
             cout << "Il vettore " << i+1 << "-esimo ha dimensione diversa" << endl;
         }
     }
-    long columns = matrix[0].size();
     ofstream text(name);
     if (!transposed) {
+        long rows = matrix.size();
+        long columns = matrix[0].size();
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
                 text << matrix[i][j] << " ";
@@ -198,9 +197,12 @@ void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed
             text << endl;
         }
     } else {
+        vector<vector<double>> _matrix = transpose(matrix);
+        long rows = _matrix.size();
+        long columns = _matrix[0].size();
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
-                text << matrix[j][i] << " "; //trasposta della matrice di partenza
+                text << _matrix[i][j] << " "; //trasposta della matrice di partenza
             }
             text << endl;
         }
@@ -254,7 +256,6 @@ struct Interpolation {
 
 
 int main() {
-    vector<double> list = loadDataManually();
-    cout << meanStanDev(list) << endl;
+    writeDataOnFile("gnuplot", {{1, 2, 3, 4, 5, 6},{2, 4, 6, 8, 10, 12}, {3, 6, 9, 12, 15, 18}}, true);
     return 0;
 }
