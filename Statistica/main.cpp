@@ -70,6 +70,15 @@ vector<double> stringToVector(string line) {
     return ret;
 }
 
+string vectorToString(vector<double> input) {
+    string output;
+    for (double c: input) {
+        string elem = to_string(c) + " ";
+        output += elem;
+    }
+    return output;
+}
+
 vector<double> removeAllDuplicates(vector<double> vec) {
     long size = vec.size();
     vector<double> ret;
@@ -115,7 +124,7 @@ vector<vector<double>> readMatrix(string fileName, bool transposed) {
     for (string line; getline(file, line);) {
         matrix.push_back(stringToVector(line));
     }
-    if (transposed) { //broken
+    if (transposed) { 
         matrix = transpose(matrix);
     }
     return matrix;
@@ -223,14 +232,19 @@ struct Interpolation {
         switch (discr) {
             case 1:
                 for (int i = 0; i<size; ++i) { sum += pow(SY[i], -2); }
+                break;
             case 2:
                 for (int i = 0; i<size; ++i) { sum += pow(X[i]/SY[i], 2); }
+                break;
             case 3:
                 for (int i = 0; i<size; ++i) { sum += X[i]/pow(SY[i], 2); }
+                break;
             case 4:
                 for (int i = 0; i<size; ++i) { sum += Y[i]/pow(SY[i], 2); }
+                break;
             case 5:
                 for (int i = 0; i<size; ++i) { sum += X[i]*Y[i]/pow(SY[i], 2); }
+                break;
             default:
                 break;
         }
@@ -239,13 +253,13 @@ struct Interpolation {
     double delta() {
         return term(1)*term(2)-pow(term(3), 2);
     }
-    double a() {
+    double a() { //intercept
         return pow(delta(), -1)*(term(2)*term(4)-term(3)*term(5));
     }
     double incA() {
         return sqrt(pow(delta(), -1)*term(2));
     }
-    double b() {
+    double b() { //slope
         return pow(delta(), -1)*(term(1)*term(5)-term(3)*term(4));
     }
     double incB() {
@@ -253,9 +267,43 @@ struct Interpolation {
     }
 };
 
-
+void gnuplotPrint(string fileName, string _dataFile, int columns, bool linearFit) {
+    ofstream file(fileName);
+    string dataFile = "'" + _dataFile + "'";
+    if (linearFit) { //per la scelta dei parametri a,b trovare un valore conveniente
+        file << "f(x) = a + b*x" << "\n" << "a = 1" << "\n" << "b = 1" << endl;
+        switch (columns) {
+            case 2:
+                file << "fit f(x) " << dataFile << " using 1:2 via a,b" << endl;
+                file << "plot " << dataFile << " using 1:(f($1)) with lines,'' using 1:2" << endl;
+                break;
+            case 3:
+                file << "fit f(x) " << dataFile << " using 1:2:3 via a,b" << endl;
+                file << "plot " << dataFile << " using 1:(f($1)) with lines,'' using 1:2:3 with yerrorbars" << endl;
+                break;
+            default: break;
+        }
+    } else {
+        switch (columns) {
+            case 2:
+                file << "plot " << dataFile << endl;
+                break;
+            case 3:
+                file << "plot " <<  dataFile << " using 1:2:3 with yerrorbars" << endl;
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 int main() {
-    writeDataOnFile("gnuplot", {{1, 2, 3, 4, 5, 6},{2, 4, 6, 8, 10, 12}, {3, 6, 9, 12, 15, 18}}, true);
+    gnuplotPrint("fit", "data", 3, true);
+    vector<vector<double>> data = readMatrix("data", true);
+    Interpolation stat;
+    stat.X = data[0];
+    stat.Y = data[1];
+    stat.SY = data[2];
+    cout << stat.a() << " " << stat.b() << " " << stat.incA() << " " << stat.incB() << endl;
     return 0;
 }
