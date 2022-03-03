@@ -14,7 +14,7 @@
 /*
  Idee:
  -propagazione incertezze
- -chi quadro
+ -chi quadro //esempio in Estensimetro
  .
  */
 
@@ -216,6 +216,14 @@ void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed
             text << endl;
         }
     }
+}
+
+vector<double> triangError(vector<double> resolutions) {
+    vector<double> output;
+    for (int i = 0; i < resolutions.size(); ++i) {
+        output.push_back(resolutions[i]/(2*sqrt(6)));
+    }
+    return output;
 }
 
 //coefficienti interpolazione
