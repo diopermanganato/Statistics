@@ -130,6 +130,15 @@ vector<vector<double>> readMatrix(string fileName, bool transposed) {
     return matrix;
 }
 
+vector<string> wrapStringArray(vector<string> input, string end) {
+    vector<string> output;
+    for (string s: input) {
+        string cor = end + s + end;
+        output.push_back(cor);
+    }
+    return output;
+}
+
 double mean(vector<double> data) {
     long size = data.size();
     double sum = 0;
@@ -275,6 +284,36 @@ struct Interpolation {
     }
 };
 
+//i parametri consistono ordinatamente di titolo, x label, y label. Il grid è settato di default
+void multipleLinearFit(string fileName, vector<string> _dataFiles, int columns, vector<vector<string>> parameters) {
+    ofstream file(fileName);
+    vector<string> dataFiles = wrapStringArray(_dataFiles, "'");
+    long numOfFits = dataFiles.size();
+    
+    vector<string> functions = {"f(x)","g(x)","h(x)","s(x)","t(x)","r(x)","p(x)"};
+    vector<vector<string>> coupleOfParam = {{"a", "b"},{"c", "d"},{"e", "f"},{"g", "h"},{"i", "j"},{"k", "l"},{"m", "n"}};
+    
+    if (numOfFits > functions.size()) {
+        cout << "Non ci sono abbastanza funzioni" << endl;
+        abort();
+    }
+    
+    file << "set grid" << endl;
+    for (int i = 0; i < numOfFits; ++i) {
+        file << functions[i] << " = " << coupleOfParam[i][0] << " + " << coupleOfParam[i][1] << "*x" << endl;
+        file << coupleOfParam[i][0] << " = 1" << "\n" << coupleOfParam[i][1] << " = 1" << endl;
+    }
+    switch (columns) {
+        case 3:
+            for (int i = 0; i < numOfFits; ++i) {
+                file << "fit " << functions[i];
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 void gnuplotPrint(string fileName, string _dataFile, int columns, bool linearFit) {
     ofstream file(fileName);
     string dataFile = "'" + _dataFile + "'";
@@ -306,12 +345,7 @@ void gnuplotPrint(string fileName, string _dataFile, int columns, bool linearFit
 }
 
 int main() {
-    gnuplotPrint("fit", "data", 3, true);
-    vector<vector<double>> data = readMatrix("data", true);
-    Interpolation stat;
-    stat.X = data[0];
-    stat.Y = data[1];
-    stat.SY = data[2];
-    cout << stat.a() << " " << stat.b() << " " << stat.incA() << " " << stat.incB() << endl;
+    vector<string> lel = wrapStringArray({"casa", "piede"}, "'");
+    cout << lel[1] << endl;
     return 0;
 }
