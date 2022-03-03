@@ -1,5 +1,4 @@
 # Statistics
-In this project I collect some tools to compute statistical quantities.
-I'm not a pure C++ developer, so I'm not used to the best practices for this language.
-The aim of this project is to be flexible to the most of cases, and it's meant to be used with GNUPlot for data representation. 
-I use XCode for coding, which generates a bunch of useless code to work. All you are interested to is in the 'Statistica' folder.
+In this project I collect some functions and structures to compute statistical quantities.
+The aim of this code is to be flexible to the most of situations, and it's meant to be used with GNUPlot for data representation. 
+
