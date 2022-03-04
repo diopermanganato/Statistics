@@ -285,12 +285,14 @@ struct Interpolation {
 };
 
 //i parametri consistono ordinatamente di titolo, x label, y label. Il grid è settato di default
-void multipleLinearFit(string fileName, vector<string> _dataFiles, int columns, vector<vector<string>> parameters) {
+void multipleLinearFit(string fileName, vector<string> _dataFiles, int columns, vector<string> _parameters) {
     ofstream file(fileName);
     vector<string> dataFiles = wrapStringArray(_dataFiles, "'");
+    vector<string> parameters = wrapStringArray(_parameters, "'");
     long numOfFits = dataFiles.size();
     
     vector<string> functions = {"f(x)","g(x)","h(x)","s(x)","t(x)","r(x)","p(x)"};
+    vector<string> funcNames = {"f", "g", "h", "s", "t", "r", "p"};
     vector<vector<string>> coupleOfParam = {{"a", "b"},{"c", "d"},{"e", "f"},{"g", "h"},{"i", "j"},{"k", "l"},{"m", "n"}};
     
     if (numOfFits > functions.size()) {
@@ -298,7 +300,15 @@ void multipleLinearFit(string fileName, vector<string> _dataFiles, int columns, 
         abort();
     }
     
+    if (parameters.size() != 3) {
+        cout << "Inserire titolo, label di x e di y" << endl;
+        abort();
+    }
+    
     file << "set grid" << endl;
+    file << "set title " << parameters[0] << endl;
+    file << "set xlabel " << parameters[1] << endl;
+    file << "set ylabel " << parameters[2] << endl;
     for (int i = 0; i < numOfFits; ++i) {
         file << functions[i] << " = " << coupleOfParam[i][0] << " + " << coupleOfParam[i][1] << "*x" << endl;
         file << coupleOfParam[i][0] << " = 1" << "\n" << coupleOfParam[i][1] << " = 1" << endl;
@@ -306,12 +316,18 @@ void multipleLinearFit(string fileName, vector<string> _dataFiles, int columns, 
     switch (columns) {
         case 3:
             for (int i = 0; i < numOfFits; ++i) {
-                file << "fit " << functions[i];
+                file << "fit " << functions[i] << " " << dataFiles[i] << " using 1:2:3 via " << coupleOfParam[i][0] << "," << coupleOfParam[i][1] << endl;
             }
             break;
         default:
+            cout << "Numero di colonne non ammesso" << endl;
             break;
     }
+    file << "plot ";
+    for (int i = 0; i < numOfFits-1; ++i) {
+        file << functions[i] << ", " << dataFiles[i] << ", ";
+    }
+    file << functions[numOfFits-1] << ", " << dataFiles[numOfFits-1];
 }
 
 void gnuplotPrint(string fileName, string _dataFile, int columns, bool linearFit) {
@@ -345,7 +361,6 @@ void gnuplotPrint(string fileName, string _dataFile, int columns, bool linearFit
 }
 
 int main() {
-    vector<string> lel = wrapStringArray({"casa", "piede"}, "'");
-    cout << lel[1] << endl;
+    multipleLinearFit("prova", {"file1.txt", "file2.txt"}, 3, {"titolo", "x [s]", "y [m]"});
     return 0;
 }

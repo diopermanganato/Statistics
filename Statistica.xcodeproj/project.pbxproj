@@ -23,6 +23,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1697AD0927D256C2001C0188 /* file1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = file1.txt; sourceTree = "<group>"; };
+		1697AD0A27D25719001C0188 /* file2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = file2.txt; sourceTree = "<group>"; };
 		16EB51BF278B029F0045CB43 /* Statistica */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Statistica; sourceTree = BUILT_PRODUCTS_DIR; };
 		16EB51C2278B029F0045CB43 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -41,6 +43,8 @@
 		16EB51B6278B029F0045CB43 = {
 			isa = PBXGroup;
 			children = (
+				1697AD0927D256C2001C0188 /* file1.txt */,
+				1697AD0A27D25719001C0188 /* file2.txt */,
 				16EB51C1278B029F0045CB43 /* Statistica */,
 				16EB51C0278B029F0045CB43 /* Products */,
 			);
