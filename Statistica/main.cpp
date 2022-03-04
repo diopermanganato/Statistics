@@ -190,14 +190,22 @@ double compatibility(double msr1, double inc1, double msr2, double inc2) {
     return abs(msr1-msr2)/sqrt(pow(inc1, 2)+pow(inc2, 2));
 }
 
-double chiSquared(int k, vector<double> msr, vector<double> refValues, vector<double> var) {
+double chiSquared(vector<double> msr, vector<double> refValues, vector<double> var) {
+    if (msr.size() != refValues.size() || refValues.size() != var.size() || var.size() != msr.size()) {
+        cout << "Le dimensioni dei vettori sono diverse" << endl;
+        abort();
+    }
+    long N = msr.size();
     double sum = 0;
-    for (int i = 0; i < k; ++i) {
+    for (int i = 0; i < N; ++i) {
         sum += pow((msr[i]-refValues[i])/var[i], 2);
     }
     return sum;
 }
 
+vector<double> linearMultipleChiSquared(vector<vector<double>> X, vector<vector<double>> Y, vector<vector<double>> Sy, vector<vector<double>> parameters) {
+    
+}
 void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed) {
     for (int i = 0; i < matrix.size()-1; ++i) {
         if (matrix[i].size() != matrix[i+1].size()) {
