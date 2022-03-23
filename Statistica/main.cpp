@@ -103,9 +103,10 @@ vector<vector<double>> transpose(vector<vector<double>> matrix) {
     return temp;
 }
 
-vector<double> loadDataManually() {
+vector<double> loadDataManually(string text) {
     vector<double> output;
     string x;
+    cout << "Messaggio: " << text << endl;
     cout << "Inserisci i valori e premi x per chiudere l'input" << endl;
     while (cin >> x) {
         if (x == "x") break;
@@ -146,6 +147,29 @@ double mean(vector<double> data) {
         sum += data[i];
     }
     return sum/size;
+}
+
+double weightedAverage(vector<double> averages, vector<double> errors) {
+    double num = 0, denom = 0;
+    if (averages.size() != errors.size()) {
+        cout << "Vettori con dimensioni diverse" << endl;
+        abort();
+    }
+    long size = averages.size();
+    
+    for (int i = 0; i < size; ++i) {
+        num += averages[i]/pow(errors[i], 2);
+        denom += pow(errors[i], -2);
+    }
+    return num/denom;
+}
+
+double weightedAvError(vector<double> errors) {
+    double sum = 0;
+    for (int i = 0; i < errors.size(); ++i) {
+        sum += pow(errors[i], -2);
+    }
+    return sqrt(1/sum);
 }
 
 double mode(vector<double> data) { //could be improved
@@ -203,9 +227,10 @@ double chiSquared(vector<double> msr, vector<double> refValues, vector<double> v
     return sum;
 }
 
-vector<double> linearMultipleChiSquared(vector<vector<double>> X, vector<vector<double>> Y, vector<vector<double>> Sy, vector<vector<double>> parameters) {
-    
-}
+//vector<double> linearMultipleChiSquared(vector<vector<double>> X, vector<vector<double>> Y, vector<vector<double>> Sy, vector<vector<double>> parameters) {
+//
+//}
+
 void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed) {
     for (int i = 0; i < matrix.size()-1; ++i) {
         if (matrix[i].size() != matrix[i+1].size()) {
@@ -313,6 +338,8 @@ void multipleLinearFit(string fileName, vector<string> _dataFiles, int columns, 
         abort();
     }
     
+    file << "set terminal x11 enhanced font 'Helvetica,20'" << endl;
+    file << "set termoption enhanced" << endl;
     file << "set grid" << endl;
     file << "set title " << parameters[0] << endl;
     file << "set xlabel " << parameters[1] << endl;
