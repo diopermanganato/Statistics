@@ -260,10 +260,11 @@ void writeDataOnFile(string name, vector<vector<double>> matrix, bool transposed
     }
 }
 
-vector<double> triangError(vector<double> resolutions) {
+vector<double> singMeasError(vector<double> resolutions, bool analogic) {
     vector<double> output;
     for (int i = 0; i < resolutions.size(); ++i) {
-        output.push_back(resolutions[i]/(2*sqrt(6)));
+        if (analogic) output.push_back(resolutions[i]/(2*sqrt(6)));
+        if (!analogic) output.push_back(resolutions[i]/(2*sqrt(3)));
     }
     return output;
 }
@@ -316,6 +317,30 @@ struct Interpolation {
         return sqrt(pow(delta(), -1)*term(1));
     }
 };
+
+vector<double> postError(vector<vector<double>> Xdata, vector<vector<double>> Ydata, vector<vector<double>> parameters) {
+    //parameters è una matrice Nx2, perché l'errore a post si calcola per fit lineari
+    vector<double> output;
+    if (Ydata.size() != parameters.size() || Xdata.size() != Ydata.size() || Xdata.size() != parameters.size()) {
+        cout << "I vettori hanno dimensioni diverse:" << endl;
+        cout << Xdata.size() << "\t" << Ydata.size() << "\t" << parameters.size() << endl;
+        abort();
+    }
+    long size = Xdata.size();
+    double sum = 0;
+    for (int i = 0; i < size; ++i) { //i indica la riga i-esima di dati
+        double a = parameters[i][0], b = parameters[i][1];
+        for (int j = 0; j < Xdata[i].size(); ++j) { //j indica il j-esimo dato della riga i-esima
+            sum += pow((Ydata[i][j]-(a+b*Xdata[i][j])), 2);
+            cout << "somma " << i << " " << j  << ": " << sum << endl;
+        }
+        output.push_back(sqrt(sum/(Ydata[i].size()-2)));
+        sum = 0;
+    }
+    return output;
+}
+
+
 
 //i parametri consistono ordinatamente di titolo, x label, y label. Il grid è settato di default
 void multipleLinearFit(string fileName, vector<string> _dataFiles, int columns, vector<string> _parameters) {
